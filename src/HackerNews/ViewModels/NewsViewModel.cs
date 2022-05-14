@@ -91,7 +91,7 @@ partial class NewsViewModel : ObservableObject
 				finally
 				{
 					if (updatedStory is not null && !TopStoryCollection.Any(x => x.Title.Equals(updatedStory.Title)))
-						InsertIntoSortedCollection(TopStoryCollection, (a, b) => b.Score.CompareTo(a.Score), updatedStory);
+						Application.Current?.Dispatcher.Dispatch(() => InsertIntoSortedCollection(TopStoryCollection, (a, b) => b.Score.CompareTo(a.Score), updatedStory));
 				}
 			}
 		}

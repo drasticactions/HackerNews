@@ -27,14 +27,14 @@ class NewsPage : BaseContentPage<NewsViewModel>
 		{
 			RefreshColor = Colors.Black,
 
-			Content = new CollectionView
+			Content = new ListView
 			{
 				BackgroundColor = Color.FromArgb("F6F6EF"),
-				SelectionMode = SelectionMode.Single,
+				SelectionMode = ListViewSelectionMode.Single,
 				ItemTemplate = new StoryDataTemplate(),
 
-			}.Bind(CollectionView.ItemsSourceProperty, nameof(NewsViewModel.TopStoryCollection))
-			 .Invoke(collectionView => collectionView.SelectionChanged += HandleSelectionChanged)
+			}.Bind(ListView.ItemsSourceProperty, nameof(NewsViewModel.TopStoryCollection))
+			 .Invoke(listView => listView.ItemSelected += HandleSelectionChanged)
 
 		}.Bind(RefreshView.IsRefreshingProperty, nameof(NewsViewModel.IsListRefreshing))
 		 .Bind(RefreshView.CommandProperty, nameof(NewsViewModel.RefreshCommand));
@@ -45,8 +45,8 @@ class NewsPage : BaseContentPage<NewsViewModel>
 		base.OnAppearing();
 
 		if (Content is RefreshView refreshView
-			&& refreshView.Content is CollectionView collectionView
-			&& IsNullOrEmpty(collectionView.ItemsSource))
+			&& refreshView.Content is ListView listView
+			&& IsNullOrEmpty(listView.ItemsSource))
 		{
 			refreshView.IsRefreshing = true;
 		}
@@ -54,14 +54,14 @@ class NewsPage : BaseContentPage<NewsViewModel>
 		static bool IsNullOrEmpty(in IEnumerable? enumerable) => !enumerable?.GetEnumerator().MoveNext() ?? true;
 	}
 
-	async void HandleSelectionChanged(object? sender, SelectionChangedEventArgs e)
+	async void HandleSelectionChanged(object? sender, SelectedItemChangedEventArgs e)
 	{
 		ArgumentNullException.ThrowIfNull(sender);
 
-		var collectionView = (CollectionView)sender;
-		collectionView.SelectedItem = null;
+		var listView = (ListView)sender;
+		listView.SelectedItem = null;
 
-		if (e.CurrentSelection.FirstOrDefault() is StoryModel storyModel)
+		if (e.SelectedItem is StoryModel storyModel)
 		{
 			if (!string.IsNullOrEmpty(storyModel.Url))
 			{

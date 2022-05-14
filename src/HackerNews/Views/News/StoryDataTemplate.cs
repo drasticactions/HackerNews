@@ -7,10 +7,15 @@ namespace HackerNews;
 
 public class StoryDataTemplate : DataTemplate
 {
-	public StoryDataTemplate() : base(CreateGrid)
+	public StoryDataTemplate() : base(CreateViewCell)
 	{
 
 	}
+
+	static ViewCell CreateViewCell() => new()
+	{
+		View = CreateGrid(),
+	};
 
 	static Grid CreateGrid() => new()
 	{
